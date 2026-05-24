@@ -1,0 +1,21 @@
+# ModelSim / simulation generated files
+sim/work/
+sim/transcript
+sim/modelsim_transcript.log
+sim/modelsim.ini
+sim/vsim.wlf
+sim/*.wlf
+sim/wlf*
+sim/*.vcd
+work/
+transcript
+*.wlf
+*.vcd
+
+# Render/QA intermediates
+docs/rendered*/
+
+# OS/editor noise
+Thumbs.db
+.DS_Store
+*.bak
