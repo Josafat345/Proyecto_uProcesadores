@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: mux4.v
- * Autor: Josaf
+ * Autor: Josafat Vasquez
  * Fecha: 2026-05-23
  * Descripcion: Multiplexor de 4 entradas para seleccionar la entrada Y de la ALU.
  */

@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: register4.v
- * Autor: Josaf
+ * Autor: Josafat Vasquez
  * Fecha: 2026-05-23
  * Descripcion: Registro sincronico de 4 bits con reset asincrono y enable.
  */

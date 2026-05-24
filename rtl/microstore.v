@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: microstore.v
- * Autor: Josaf
+ * Autor: Josafat Vasquez
  * Fecha: 2026-05-23
  * Descripcion: ROM de microcodigo para el programa de demostracion.
  */

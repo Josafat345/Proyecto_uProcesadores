@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: control_unit.v
- * Autor: Josaf
+ * Autor: Josafat Vasquez
  * Fecha: 2026-05-23
  * Descripcion: Unidad de control microprogramada con contador de direccion.
  */

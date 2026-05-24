@@ -1,76 +1,65 @@
 # Proyecto uProcesadores
 
-Implementacion en Verilog de una trayectoria de datos microcodificada de 4 bits, con unidad de control, ALU, registros, banderas y testbench para ModelSim.
+Implementacion en Verilog de una trayectoria de datos microcodificada de 4 bits. El proyecto esta organizado por modulos para poder explicar y probar cada parte por separado: registros, MUX, ALU, banderas, datapath, microstore y unidad de control.
 
-El proyecto esta organizado por modulos para que cada parte del sistema se pueda explicar y verificar por separado: datapath, ALU, registros, banderas, microstore y unidad de control.
+La simulacion principal esta preparada para ModelSim y tambien se agrego un `top` especial para implementar el diseno en la Tang Nano 9K usando Gowin.
 
-## Resumen
+## Resumen del sistema
 
-El sistema ejecuta un microprograma almacenado en una ROM de control. En cada ciclo, la direccion `ADDx` selecciona una microinstruccion dentro del `microstore`. Esa microinstruccion genera las senales que controlan el datapath:
+El sistema ejecuta un microprograma almacenado en una ROM de control (`microstore`). En cada ciclo, la direccion `ADDx` selecciona una microinstruccion. Esa microinstruccion genera las senales de control para el datapath:
 
-- que registros cargan datos
-- que entrada entra al MUX
-- que operacion realiza la ALU
-- si las banderas se actualizan o se usa el valor guardado
-- si la siguiente direccion es secuencial o por salto
+- habilitacion de registros `A`, `B` y `C`
+- seleccion de entrada del MUX
+- operacion de la ALU
+- actualizacion o conservacion de banderas
+- seleccion de la siguiente direccion del microprograma
 
-La entrada externa es `SW[3:0]` y la salida principal es `LEDS[3:0]`, que muestra el contenido del registro `C`.
+La entrada de datos es `SW[3:0]`. La salida principal es `LEDS[3:0]`, que representa el contenido del registro `C`.
 
-## Arquitectura general
+## Estructura
 
-El proyecto se divide en dos bloques principales:
-
-| Bloque | Funcion |
-|---|---|
-| Datapath | Procesa y almacena datos usando registros, MUX, ALU y banderas. |
-| Unidad de control | Lee el microcodigo y genera las senales de control para el datapath. |
-
-### Datapath
-
-El datapath contiene:
-
-- registros `A`, `B` y `C`
-- MUX de 4 entradas para seleccionar la entrada `Y` de la ALU
-- ALU de 4 bits
-- banderas `C-flag` y `Z-flag`
-- salida `LEDS[3:0]` conectada al registro `C`
-
-![Datapath](docs/drawio/datapath_profesor_style_full_flags.drawio.png)
-
-La salida de la ALU, `Z`, regresa a los registros `A`, `B` y `C`. Sin embargo, no todos cargan al mismo tiempo: cada registro tiene su propia senal de habilitacion (`EnA`, `EnB`, `EnC`).
-
-### Unidad de control
-
-La unidad de control usa un contador de direccion `ADDx` para apuntar a la microinstruccion actual. La ROM de microcodigo entrega los campos de control y la logica de salto decide la proxima direccion.
-
-![Unidad de control](docs/figures/control_unit.png)
-
-Campos principales de control:
-
-| Campo | Funcion |
-|---|---|
-| `EnA`, `EnB`, `EnC` | Habilitan la carga de los registros A, B y C. |
-| `SelMux` | Selecciona la entrada `Y` de la ALU. |
-| `SelAlu` | Selecciona la operacion de la ALU. |
-| `FS` | Selecciona bandera actual o bandera guardada. |
-| `KVAL` | Constante de 4 bits usada por el datapath. |
-| `TEST` | Define la condicion de salto. |
-| `NATT` | Direccion destino cuando se toma un salto. |
+```text
+.
+|-- rtl/
+|   |-- register4.v
+|   |-- mux4.v
+|   |-- alu4.v
+|   |-- flag_registers.v
+|   |-- datapath.v
+|   |-- microstore.v
+|   |-- control_unit.v
+|   |-- proyecto_microcodificado_top.v
+|   `-- gowin_tangnano9k_top.v
+|-- tb/
+|   `-- tb_proyecto_microcodificado.v
+|-- sim/
+|   `-- modelsim.do
+|-- docs/
+|   |-- figures/
+|   |-- drawio/
+|   |-- Informe_funcionamiento_proyecto_actualizado.docx
+|   `-- Informe_Proyecto_IEEE_JosafatVasquez.docx
+|-- tangnano9k_template.cst
+|-- Out.png
+|-- Wave.png
+|-- Proyecto_2026.pdf
+`-- README.md
+```
 
 ## Modulos Verilog
 
-| Archivo | Descripcion |
+| Archivo | Funcion |
 |---|---|
-| `rtl/register4.v` | Registro de 4 bits con reset asincrono y enable. |
+| `rtl/register4.v` | Registro sincronico de 4 bits con reset y enable. |
 | `rtl/mux4.v` | MUX 4 a 1 para seleccionar la entrada `Y` de la ALU. |
 | `rtl/alu4.v` | ALU de 4 bits con suma, resta, paso de `Y` y AND. |
-| `rtl/flag_registers.v` | Registro y seleccion de banderas `C` y `Z`. |
+| `rtl/flag_registers.v` | Manejo de banderas `C` y `Z`. |
 | `rtl/datapath.v` | Integra registros, MUX, ALU y banderas. |
 | `rtl/microstore.v` | ROM de microcodigo. |
-| `rtl/control_unit.v` | Contador de direccion y logica de bifurcacion. |
-| `rtl/proyecto_microcodificado_top.v` | Modulo superior del proyecto. |
-| `tb/tb_proyecto_microcodificado.v` | Testbench para ModelSim. |
-| `sim/modelsim.do` | Script para compilar, simular y agregar senales al Wave. |
+| `rtl/control_unit.v` | Contador de microdireccion y logica de salto. |
+| `rtl/proyecto_microcodificado_top.v` | Top general usado para simulacion. |
+| `rtl/gowin_tangnano9k_top.v` | Top para implementar en Tang Nano 9K. |
+| `tb/tb_proyecto_microcodificado.v` | Testbench para ModelSim. No se usa en Gowin. |
 
 ## Microcodigo implementado
 
@@ -84,39 +73,19 @@ Campos principales de control:
 0110        goto Start
 ```
 
-`Z-flag*` indica que se usa la bandera `Z` guardada previamente. Esto permite que el estado `S2` tome la decision con base en el valor leido en `S1`.
-
-## Tabla de control
-
-| Dir | TEST | NATT | EnA | EnB | EnC | SelMux | SelAlu | FS | KVAL | Microoperacion |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `0000` | `00` | `0000` | `0` | `0` | `1` | `10` | `10` | `0` | `1111` | `C <- F` |
-| `0001` | `00` | `0000` | `1` | `1` | `0` | `11` | `10` | `1` | `0000` | `A,B <- SW` |
-| `0010` | `11` | `0000` | `0` | `1` | `1` | `00` | `01` | `0` | `0000` | `B,C <- C - A; if Z* goto Start` |
-| `0011` | `00` | `0000` | `0` | `0` | `1` | `00` | `10` | `0` | `0000` | `C <- A` |
-| `0100` | `00` | `0000` | `0` | `0` | `1` | `10` | `00` | `0` | `0001` | `C <- C + 1` |
-| `0101` | `10` | `0100` | `0` | `0` | `0` | `01` | `01` | `1` | `0000` | `C - B; if C goto Top` |
-| `0110` | `01` | `0000` | `0` | `0` | `0` | `00` | `00` | `0` | `0000` | `goto Start` |
+`Z-flag*` indica que la unidad de control usa la bandera `Z` guardada previamente.
 
 ## Simulacion en ModelSim
 
-### Opcion recomendada
-
-Abrir ModelSim y ejecutar:
+Desde ModelSim, ejecutar:
 
 ```tcl
 do {C:/Users/josaf/OneDrive/Documents/VII Semestre/05_uProcesadores/07_Proyecto/sim/modelsim.do}
 ```
 
-El script:
+El script crea la libreria `work`, compila todos los modulos, carga el testbench, agrega las senales principales al Wave y corre la simulacion.
 
-1. crea la libreria `work`
-2. compila todos los modulos Verilog
-3. carga el testbench
-4. agrega las senales importantes al Wave con nombres legibles
-5. ejecuta la simulacion completa
-
-### Senales recomendadas para revisar
+Senales recomendadas para revisar:
 
 - `Clock`
 - `Reset`
@@ -135,66 +104,138 @@ El script:
 - `FS`
 - `KVAL`
 
-## Evidencia de simulacion
-
-Salida de consola:
+Evidencias:
 
 ![Salida de ModelSim](Out.png)
 
-Ventana Wave:
-
 ![Wave de ModelSim](Wave.png)
+
+## Implementacion en Gowin para Tang Nano 9K
+
+Para implementar el proyecto en Gowin, se debe usar el top especial:
+
+```text
+gowin_tangnano9k_top
+```
+
+Este modulo adapta el proyecto a la placa:
+
+- entrada de reloj: `sys_clk`
+- reset activo en bajo: `sys_rst_n`
+- entrada de datos: `sw[3:0]`
+- salida visible: `led[3:0]`
+
+El wrapper tambien divide el reloj onboard de 27 MHz usando `clk_div[23]`, para que el avance del microprograma sea visible en los LEDs. Si se quisiera correr a velocidad completa, se puede cambiar en `gowin_tangnano9k_top.v` la conexion `.Clock(core_clk)` por `.Clock(sys_clk)`.
+
+Los LEDs onboard de la Tang Nano 9K son activos en bajo. Por eso el wrapper invierte la salida:
+
+```verilog
+assign led = ~leds_internal;
+```
+
+### Archivos que se agregan a Gowin
+
+Agregar estos archivos Verilog al proyecto de Gowin:
+
+```text
+rtl/register4.v
+rtl/mux4.v
+rtl/alu4.v
+rtl/flag_registers.v
+rtl/datapath.v
+rtl/microstore.v
+rtl/control_unit.v
+rtl/proyecto_microcodificado_top.v
+rtl/gowin_tangnano9k_top.v
+```
+
+No agregar estos archivos a Gowin:
+
+```text
+tb/tb_proyecto_microcodificado.v
+sim/modelsim.do
+```
+
+### Pasos en Gowin
+
+1. Crear un proyecto nuevo: `File > New > FPGA Design Project`.
+2. Seleccionar la familia/dispositivo de la Tang Nano 9K: `GW1NR-9`, package `QN88`. Si Gowin muestra variantes de velocidad, seleccionar la que corresponda a la placa.
+3. Agregar los `.v` listados arriba.
+4. Definir como top module: `gowin_tangnano9k_top`.
+5. Agregar o crear el archivo de constraints usando `tangnano9k_template.cst`.
+6. Completar los pines de `sw[3:0]` segun donde se conecten las cuatro entradas externas.
+7. Ejecutar `Synthesize`.
+8. Ejecutar `Place & Route`.
+9. Abrir `Programmer` y descargar a SRAM para probar rapidamente, o a Flash si se quiere que quede guardado.
+
+Si Gowin muestra un error tipo `PR2017`, revisar en la configuracion de Place & Route la opcion de pines de doble proposito, especialmente `Use DONE as regular IO`, como se muestra en los ejemplos de Sipeed.
+
+### Archivo CST
+
+La plantilla incluida esta en:
+
+```text
+tangnano9k_template.cst
+```
+
+Pines ya incluidos:
+
+| Senal | Pin |
+|---|---:|
+| `sys_clk` | `52` |
+| `sys_rst_n` | `4` |
+| `led[0]` | `10` |
+| `led[1]` | `11` |
+| `led[2]` | `13` |
+| `led[3]` | `14` |
+
+Falta completar:
+
+```text
+sw[0]
+sw[1]
+sw[2]
+sw[3]
+```
+
+La Tang Nano 9K no tiene cuatro switches dedicados, asi que esas entradas se deben conectar a pines externos, botones externos, jumpers o algun modulo de entrada.
 
 ## Documentacion
 
-La explicacion completa del proyecto esta en:
-
-- `docs/Informe_funcionamiento_proyecto_actualizado.docx`
-- `Proyecto_2026.pdf`
-
-Tambien se incluyen diagramas editables en:
-
-- `docs/drawio/datapath_profesor_style_full_flags.drawio`
-
-## Estructura del repositorio
+El informe principal en formato IEEE esta en:
 
 ```text
-.
-|-- rtl/
-|   |-- register4.v
-|   |-- mux4.v
-|   |-- alu4.v
-|   |-- flag_registers.v
-|   |-- datapath.v
-|   |-- microstore.v
-|   |-- control_unit.v
-|   `-- proyecto_microcodificado_top.v
-|-- tb/
-|   `-- tb_proyecto_microcodificado.v
-|-- sim/
-|   `-- modelsim.do
-|-- docs/
-|   |-- figures/
-|   |-- drawio/
-|   `-- Informe_funcionamiento_proyecto_actualizado.docx
-|-- Out.png
-|-- Wave.png
-|-- Proyecto_2026.pdf
-`-- README.md
+docs/Informe_Proyecto_IEEE_JosafatVasquez.docx
+```
+
+Tambien se incluye una explicacion de funcionamiento:
+
+```text
+docs/Informe_funcionamiento_proyecto_actualizado.docx
+```
+
+Diagramas:
+
+```text
+docs/drawio/datapath_profesor_style_full_flags.drawio
+docs/drawio/datapath_profesor_style_full_flags.drawio.png
+docs/figures/control_unit.png
+docs/figures/asm_chart.png
 ```
 
 ## Resultado esperado
 
-Durante la simulacion se observa que:
+En simulacion se observa que:
 
-- con `SW = 0000`, el programa detecta `Z-flag*` y regresa a `Start`
-- con `SW = 0100`, el programa avanza por el microprograma
+- con `SW = 0000`, el programa detecta la bandera `Z` y regresa a `Start`
+- con `SW = 0100`, el microprograma recorre los estados principales
 - `ADDx` muestra la direccion actual del microcodigo
-- `LEDS` muestra el contenido del registro `C`
+- `LEDS` muestra el registro `C`
 - `Branch tomado` se activa cuando la unidad de control toma una bifurcacion
 
-La ultima corrida de verificacion en ModelSim compilo y simulo con:
+En la Tang Nano 9K, los LEDs muestran el registro `C` de forma visible gracias al divisor de reloj del wrapper de Gowin.
 
-```text
-Errors: 0, Warnings: 0
-```
+## Referencias utiles
+
+- Sipeed Tang Nano 9K: https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-9K/Nano-9K
+- Tutorial LED en Gowin: https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-9K/examples/led.html

@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: flag_registers.v
- * Autor: Josaf
+ * Autor: Josafat Vasquez
  * Fecha: 2026-05-23
  * Descripcion: Registros de banderas C y Z con seleccion entre valor actual y guardado.
  */
