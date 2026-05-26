@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: flag_registers.v
- * Autor: Josafat Vasquez
+ * Autor: Proyecto uProcesadores
  * Fecha: 2026-05-23
  * Descripcion: Registros de banderas C y Z con seleccion entre valor actual y guardado.
  */

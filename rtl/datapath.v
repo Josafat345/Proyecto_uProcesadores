@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: datapath.v
- * Autor: Josafat Vasquez
+ * Autor: Proyecto uProcesadores
  * Fecha: 2026-05-23
  * Descripcion: Trayectoria de datos de 4 bits con registros, MUX, ALU y banderas.
  */

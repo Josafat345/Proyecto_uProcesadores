@@ -36,13 +36,10 @@ La entrada de datos es `SW[3:0]`. La salida principal es `LEDS[3:0]`, que repres
 |   `-- modelsim.do
 |-- docs/
 |   |-- figures/
-|   |-- drawio/
-|   |-- Informe_funcionamiento_proyecto_actualizado.docx
-|   `-- Informe_Proyecto_IEEE_JosafatVasquez.docx
+|   `-- drawio/
 |-- tangnano9k_template.cst
 |-- Out.png
 |-- Wave.png
-|-- Proyecto_2026.pdf
 `-- README.md
 ```
 
@@ -80,8 +77,10 @@ La entrada de datos es `SW[3:0]`. La salida principal es `LEDS[3:0]`, que repres
 Desde ModelSim, ejecutar:
 
 ```tcl
-do {C:/Users/josaf/OneDrive/Documents/VII Semestre/05_uProcesadores/07_Proyecto/sim/modelsim.do}
+do sim/modelsim.do
 ```
+
+Si ModelSim no esta abierto en la carpeta raiz del proyecto, tambien se puede ejecutar el mismo archivo usando su ruta completa local. El script calcula automaticamente las carpetas `rtl`, `tb` y `sim/work`.
 
 El script crea la libreria `work`, compila todos los modulos, carga el testbench, agrega las senales principales al Wave y corre la simulacion.
 
@@ -200,21 +199,11 @@ sw[3]
 
 La Tang Nano 9K no tiene cuatro switches dedicados, asi que esas entradas se deben conectar a pines externos, botones externos, jumpers o algun modulo de entrada.
 
-## Documentacion
+## Documentacion incluida
 
-El informe principal en formato IEEE esta en:
+El repositorio mantiene los archivos fuente, diagramas y evidencias necesarias para revisar el proyecto. Los informes `.docx`, `.pdf` y el enunciado original se dejan como archivos locales porque pueden contener datos personales o material de clase.
 
-```text
-docs/Informe_Proyecto_IEEE_JosafatVasquez.docx
-```
-
-Tambien se incluye una explicacion de funcionamiento:
-
-```text
-docs/Informe_funcionamiento_proyecto_actualizado.docx
-```
-
-Diagramas:
+Diagramas versionados:
 
 ```text
 docs/drawio/datapath_profesor_style_full_flags.drawio

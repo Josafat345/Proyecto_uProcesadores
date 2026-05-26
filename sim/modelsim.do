@@ -1,9 +1,14 @@
-# Ruta absoluta del proyecto. Asi no importa desde que carpeta este abierto ModelSim.
-set PROJECT_DIR {C:/Users/josaf/OneDrive/Documents/VII Semestre/05_uProcesadores/07_Proyecto}
-set SCRIPT_DIR [file join $PROJECT_DIR sim]
+# El script calcula la ruta del proyecto a partir de su propia ubicacion.
+set SCRIPT_PATH [file normalize [info script]]
+if {$SCRIPT_PATH eq ""} {
+    set SCRIPT_DIR [file normalize [pwd]]
+} else {
+    set SCRIPT_DIR [file dirname $SCRIPT_PATH]
+}
+set PROJECT_DIR [file normalize [file join $SCRIPT_DIR ..]]
 set RTL_DIR [file join $PROJECT_DIR rtl]
 set TB_DIR [file join $PROJECT_DIR tb]
-set WORK_DIR {C:/Users/josaf/ModelSim_Work/Proyecto_2026}
+set WORK_DIR [file join $PROJECT_DIR sim work]
 
 puts "SCRIPT_DIR  = $SCRIPT_DIR"
 puts "PROJECT_DIR = $PROJECT_DIR"
@@ -12,7 +17,7 @@ puts "TB_DIR      = $TB_DIR"
 puts "WORK_DIR    = $WORK_DIR"
 
 if {![file exists [file join $RTL_DIR register4.v]]} {
-    error "No encuentro los archivos RTL. Ejecuta: do {C:/Users/josaf/OneDrive/Documents/VII Semestre/05_uProcesadores/07_Proyecto/sim/modelsim.do}"
+    error "No encuentro los archivos RTL. Ejecuta este script desde la carpeta sim del proyecto o usando su ruta completa."
 }
 
 if {![file exists $WORK_DIR]} {

@@ -19,6 +19,12 @@ __pycache__/
 docs/__pycache__/
 *.pyc
 
+# Local/personal deliverables
+Proyecto_2026.pdf
+docs/*.docx
+docs/*.pdf
+docs/build_informe_ieee.py
+
 # OS/editor noise
 Thumbs.db
 .DS_Store

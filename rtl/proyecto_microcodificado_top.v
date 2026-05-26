@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: proyecto_microcodificado_top.v
- * Autor: Josafat Vasquez
+ * Autor: Proyecto uProcesadores
  * Fecha: 2026-05-23
  * Descripcion: Modulo superior del proyecto de trayectoria de datos microcodificada.
  */

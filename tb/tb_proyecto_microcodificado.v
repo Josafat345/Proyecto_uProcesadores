@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: tb_proyecto_microcodificado.v
- * Autor: Josafat Vasquez
+ * Autor: Proyecto uProcesadores
  * Fecha: 2026-05-23
  * Descripcion: Testbench para ModelSim del proyecto microcodificado.
  */

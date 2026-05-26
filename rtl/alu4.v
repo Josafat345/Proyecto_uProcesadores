@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: alu4.v
- * Autor: Josafat Vasquez
+ * Autor: Proyecto uProcesadores
  * Fecha: 2026-05-23
  * Descripcion: ALU de 4 bits con suma, resta, paso de Y y AND bit a bit.
  */

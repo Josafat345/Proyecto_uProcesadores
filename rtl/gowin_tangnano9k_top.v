@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 /*
  * Archivo: gowin_tangnano9k_top.v
- * Autor: Josafat Vasquez
+ * Autor: Proyecto uProcesadores
  * Fecha: 2026-05-24
  * Descripcion: Envoltorio para implementar el proyecto en la Tang Nano 9K.
  */
